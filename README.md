@@ -1,14 +1,4 @@
-# 🌊 Wavy — Ocean Hazard Detector | v4 (Full Stack)
 
-## Version History
-| Version | Folder             | What's inside                              |
-|---------|--------------------|--------------------------------------------|
-| v1      | wavy-project/      | Frontend only                              |
-| v2      | wavy-project-v2/   | Frontend + MongoDB backend                 |
-| v3      | wavy-project-v3/   | Landing page + Login + Register + MySQL    |
-| **v4**  | **wavy-project-v4/**| **+ Admin Panel + Email Alerts + Git + Deploy** |
-
----
 
 ## 📁 Project Structure
 ```
