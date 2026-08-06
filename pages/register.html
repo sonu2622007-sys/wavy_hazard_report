@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — Wavy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'DM Sans',sans-serif;background:#020e1a;color:#e8f4f8;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px 0}
+    .card{background:#042f4b;border:1px solid rgba(29,211,176,0.2);border-radius:20px;padding:40px;width:100%;max-width:440px;margin:20px}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+    .brand-icon{font-size:30px}
+    .brand-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1dd3b0}
+    h1{font-family:'Syne',sans-serif;font-size:22px;margin-bottom:6px}
+    .sub{color:#7fafc4;font-size:14px;margin-bottom:24px}
+    .err{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#ff4d6d;margin-bottom:16px;display:none}
+    .suc{background:rgba(29,211,176,0.1);border:1px solid rgba(29,211,176,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#1dd3b0;margin-bottom:16px;display:none}
+    .field{margin-bottom:14px}
+    label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#7fafc4;margin-bottom:6px}
+    input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(29,211,176,0.15);border-radius:10px;color:#e8f4f8;font-size:15px;outline:none;font-family:'DM Sans',sans-serif}
+    input:focus{border-color:#1dd3b0}
+    .btn{width:100%;padding:14px;margin-top:8px;background:linear-gradient(135deg,#0a7e8c,#1dd3b0);border:none;border-radius:10px;color:#020e1a;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer}
+    .btn:hover{opacity:0.9}
+    .btn:disabled{opacity:0.6;cursor:not-allowed}
+    .links{display:flex;justify-content:space-between;margin-top:20px;font-size:13px}
+    .links a{color:#1dd3b0;text-decoration:none}
+    .pw-rules{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+    .rule{font-size:11px;padding:3px 8px;border-radius:6px;background:rgba(255,77,109,0.1);color:#ff4d6d}
+    .rule.ok{background:rgba(29,211,176,0.1);color:#1dd3b0}
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <span class="brand-icon">🌊</span>
+    <span class="brand-name">Wavy</span>
+  </div>
+
+  <h1>Create Account</h1>
+  <p class="sub">Join Wavy — protect your coast</p>
+
+  <div class="err" id="err"></div>
+  <div class="suc" id="suc"></div>
+
+  <div class="field">
+    <label>Full Name</label>
+    <input type="text" id="name" placeholder="Your name">
+  </div>
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="you@example.com">
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Create password" oninput="checkPw()">
+    <div class="pw-rules">
+      <span class="rule" id="r1">✗ 8+ chars</span>
+      <span class="rule" id="r2">✗ Uppercase</span>
+      <span class="rule" id="r3">✗ Number</span>
+      <span class="rule" id="r4">✗ Special char</span>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>Confirm Password</label>
+    <input type="password" id="confirm" placeholder="Repeat password">
+  </div>
+
+  <div class="field">
+    <label>Your Location (optional)</label>
+    <input type="text" id="location" placeholder="e.g. Chennai, Tamil Nadu">
+  </div>
+
+  <button class="btn" id="btn" onclick="register()">Create Account →</button>
+
+  <div class="links">
+    <a href="login.html">Already have account? Login →</a>
+    <a href="../index.html">← Home</a>
+  </div>
+</div>
+
+<script>
+function checkPw() {
+  var p = document.getElementById('password').value;
+  var r1 = p.length >= 8;
+  var r2 = /[A-Z]/.test(p);
+  var r3 = /[0-9]/.test(p);
+  var r4 = /[^a-zA-Z0-9]/.test(p);
+  setRule('r1', r1, '8+ chars');
+  setRule('r2', r2, 'Uppercase');
+  setRule('r3', r3, 'Number');
+  setRule('r4', r4, 'Special char');
+}
+function setRule(id, pass, label) {
+  var el = document.getElementById(id);
+  el.textContent = (pass ? '✓ ' : '✗ ') + label;
+  el.className = 'rule' + (pass ? ' ok' : '');
+}
+function showErr(msg) {
+  var e = document.getElementById('err');
+  e.textContent = msg;
+  e.style.display = 'block';
+  document.getElementById('suc').style.display = 'none';
+}
+function register() {
+  document.getElementById('err').style.display = 'none';
+
+  var name     = document.getElementById('name').value.trim();
+  var email    = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+  var confirm  = document.getElementById('confirm').value;
+  var location = document.getElementById('location').value.trim();
+  var btn      = document.getElementById('btn');
+
+  if (!name)     { showErr('Please enter your name.'); return; }
+  if (!email || email.indexOf('@') === -1) { showErr('Please enter a valid email.'); return; }
+  if (password.length < 8)  { showErr('Password must be at least 8 characters.'); return; }
+  if (!/[A-Z]/.test(password)) { showErr('Password must have at least 1 uppercase letter.'); return; }
+  if (!/[0-9]/.test(password))  { showErr('Password must have at least 1 number.'); return; }
+  if (!/[^a-zA-Z0-9]/.test(password)) { showErr('Password must have at least 1 special character like ! @ # $'); return; }
+  if (password !== confirm) { showErr('Passwords do not match.'); return; }
+
+  btn.textContent = 'Creating...';
+  btn.disabled = true;
+
+  localStorage.setItem('wavy_token', 'offline-mode');
+  localStorage.setItem('wavy_user', JSON.stringify({
+    id: 1, name: name, email: email, location: location, role: 'user'
+  }));
+
+  document.getElementById('suc').textContent = '✅ Account created! Going to dashboard...';
+  document.getElementById('suc').style.display = 'block';
+
+  setTimeout(function() {
+    window.location.href = 'dashboard.html';
+  }, 800);
+}
+</script>
+
+</body>
+</html>

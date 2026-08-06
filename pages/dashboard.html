@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Wavy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+
+<!-- AUTH GUARD -->
+<script>
+  if (!localStorage.getItem('wavy_user')) {
+    window.location.href = 'login.html';
+  }
+</script>
+
+<div class="ocean-bg"></div>
+
+<!-- ═══════════ TOP BAR ═══════════ -->
+<header id="topbar">
+  <button class="hamburger" onclick="toggleSidebar()" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <div class="topbar-brand">
+    🌊 Wavy
+    <small>Ocean Hazard Detector</small>
+  </div>
+
+  <div class="live-badge">
+    <div class="pulse-dot"></div>
+    <span id="alertCount">2 Active Alerts</span>
+  </div>
+
+  <!-- Admin link (shown only for admins) -->
+  <a href="admin.html" class="admin-link hidden" id="adminLink" title="Admin Panel">👑 Admin</a>
+
+  <div class="topbar-avatar" id="topbarAvatar" title="Logout" onclick="logout()">U</div>
+</header>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<nav id="sidebar">
+  <div class="sb-section">Monitoring</div>
+  <div class="sb-item active" data-panel="dashboard"><span class="sb-icon">🏠</span> Dashboard</div>
+  <div class="sb-item" data-panel="geo"><span class="sb-icon">🗺️</span> Geographic Map</div>
+  <div class="sb-item" data-panel="report"><span class="sb-icon">⚠️</span> Report Hazard <span class="sb-badge">!</span></div>
+  <div class="sb-item" data-panel="weather"><span class="sb-icon">🌦️</span> Weather Forecast</div>
+
+  <div class="sb-section">Disaster</div>
+  <div class="sb-item" data-panel="disaster"><span class="sb-icon">🆘</span> Disaster Recovery</div>
+  <div class="sb-item" data-panel="govt"><span class="sb-icon">🏛️</span> Govt Help</div>
+  <div class="sb-item" data-panel="public"><span class="sb-icon">👥</span> Public Help</div>
+
+  <div class="sb-section">Support</div>
+  <div class="sb-item" data-panel="donate"><span class="sb-icon">💛</span> Donate / Aid</div>
+  <div class="sb-item" data-panel="subsidize"><span class="sb-icon">💰</span> Subsidies</div>
+  <div class="sb-item" data-panel="settings"><span class="sb-icon">⚙️</span> Settings</div>
+  <div class="sb-item" data-panel="help"><span class="sb-icon">❓</span> Help</div>
+
+  <div class="sb-footer">
+    <div class="sb-user-info">
+      <div class="sb-user-avatar" id="sidebarAvatar">U</div>
+      <div>
+        <div class="sb-user-name" id="sidebarName">User</div>
+        <div class="sb-user-email" id="sidebarEmail"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="433630263103262e222a2f6d202c2e">[email&#160;protected]</a></div>
+      </div>
+    </div>
+    <button class="btn-logout" onclick="logout()">🚪 Logout</button>
+  </div>
+</nav>
+
+<div id="overlay"></div>
+
+<!-- ═══════════ MAIN CONTENT ═══════════ -->
+<main id="main">
+
+  <!-- ─── DASHBOARD ─── -->
+  <section class="panel active" id="panel-dashboard">
+    <div class="hero-banner">
+      <img src="../assets/images/wave.jpg" alt="Ocean Wave">
+      <div class="hero-overlay">
+        <h2>Real-Time Ocean<br>Hazard Monitoring</h2>
+        <p>Tracking cyclones, oil spills, floods &amp; storms across coastal India</p>
+        <div class="hero-badges">
+          <span class="hbadge">🌀 Active Cyclones</span>
+          <span class="hbadge warn">🛢 Oil Spill Alerts</span>
+          <span class="hbadge safe">📡 Live Data</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec-title">Overview <span class="chip">LIVE</span></div>
+    <div class="stats-row">
+      <div class="stat-card"><div class="sc-icon">🌀</div><div class="sc-label">Active Cyclones</div><div class="sc-value c-danger" id="stat-cyclone" data-count="3">0</div><div class="sc-sub">↑ 1 since yesterday</div></div>
+      <div class="stat-card"><div class="sc-icon">🛢️</div><div class="sc-label">Oil Spill Alerts</div><div class="sc-value c-warn" id="stat-oilspill" data-count="2">0</div><div class="sc-sub">Gulf of Mannar</div></div>
+      <div class="stat-card"><div class="sc-icon">🌊</div><div class="sc-label">Flood Warnings</div><div class="sc-value c-warn" id="stat-flood" data-count="5">0</div><div class="sc-sub">5 coastal zones</div></div>
+      <div class="stat-card"><div class="sc-icon">⛈️</div><div class="sc-label">Storm Systems</div><div class="sc-value c-safe" id="stat-storm" data-count="1">0</div><div class="sc-sub">Monitoring mode</div></div>
+    </div>
+
+    <div class="sec-title">Hazard Types</div>
+    <div class="img-row">
+      <div class="img-card"><img src="../assets/images/wave.jpg" alt="Cyclone"><div class="img-card-badge badge-crit">CRITICAL</div><div class="img-card-overlay"><div><div class="img-card-title">🌀 Cyclone</div><div class="img-card-sub">3 active systems</div></div></div></div>
+      <div class="img-card"><img src="../assets/images/storm-wave.jpg" alt="Storm"><div class="img-card-badge badge-warn">WARNING</div><div class="img-card-overlay"><div><div class="img-card-title">⛈️ Storm Wave</div><div class="img-card-sub">2 active zones</div></div></div></div>
+      <div class="img-card"><img src="../assets/images/tornado.jpg" alt="Waterspout"><div class="img-card-badge badge-crit">ALERT</div><div class="img-card-overlay"><div><div class="img-card-title">🌪️ Waterspout</div><div class="img-card-sub">1 spotted today</div></div></div></div>
+      <div class="img-card"><img src="../assets/images/beach.jpg" alt="Safe"><div class="img-card-badge badge-mon">SAFE</div><div class="img-card-overlay"><div><div class="img-card-title">🏖️ Safe Zones</div><div class="img-card-sub">12 clear beaches</div></div></div></div>
+    </div>
+
+    <div class="sec-title">Active Incidents <span class="chip red">Live</span></div>
+    <div class="hazard-grid">
+      <div class="haz-card"><div class="haz-head"><img class="haz-img" src="../assets/images/wave.jpg" alt="Cyclone"><div><div class="haz-title">Cyclone DANA</div><div class="haz-loc">📍 Bay of Bengal, 200 km off coast</div></div><div class="haz-status hs-crit">CRITICAL</div></div><div class="haz-body"><div class="haz-row"><span>Wind Speed</span><span>180 km/h</span></div><div class="haz-row"><span>ETA Landfall</span><span>48 hours</span></div><div class="haz-row"><span>Affected</span><span>~50,000 people</span></div><div class="prog-bar"><div class="prog-fill pf-crit" style="width:85%"></div></div></div></div>
+      <div class="haz-card"><div class="haz-head"><img class="haz-img" src="../assets/images/storm-wave.jpg" alt="Spill"><div><div class="haz-title">Oil Spill – Block 7</div><div class="haz-loc">📍 Gulf of Mannar</div></div><div class="haz-status hs-warn">WARNING</div></div><div class="haz-body"><div class="haz-row"><span>Spread Area</span><span>3.2 sq km</span></div><div class="haz-row"><span>Marine Impact</span><span>High</span></div><div class="haz-row"><span>Status</span><span>Containment active</span></div><div class="prog-bar"><div class="prog-fill pf-warn" style="width:55%"></div></div></div></div>
+      <div class="haz-card"><div class="haz-head"><img class="haz-img" src="../assets/images/tornado.jpg" alt="Storm"><div><div class="haz-title">Storm S-04</div><div class="haz-loc">📍 Arabian Sea, NW Sector</div></div><div class="haz-status hs-mon">MONITOR</div></div><div class="haz-body"><div class="haz-row"><span>Pressure</span><span>990 hPa</span></div><div class="haz-row"><span>Movement</span><span>NE at 15 km/h</span></div><div class="haz-row"><span>Risk Level</span><span>Moderate</span></div><div class="prog-bar"><div class="prog-fill pf-safe" style="width:30%"></div></div></div></div>
+    </div>
+
+    <div class="sec-title">Ocean Conditions</div>
+    <div class="weather-row" id="weather-live">
+      <div class="w-card"><div class="w-icon">🌡️</div><div class="w-val" id="w-temp">28°C</div><div class="w-lbl">Sea Surface Temp</div></div>
+      <div class="w-card"><div class="w-icon">💨</div><div class="w-val" id="w-wind">42 km/h</div><div class="w-lbl">Wind Speed</div></div>
+      <div class="w-card"><div class="w-icon">🌊</div><div class="w-val">3.5 m</div><div class="w-lbl">Wave Height</div></div>
+      <div class="w-card"><div class="w-icon">🧭</div><div class="w-val">NE</div><div class="w-lbl">Wind Direction</div></div>
+      <div class="w-card"><div class="w-icon">💧</div><div class="w-val" id="w-humid">82%</div><div class="w-lbl">Humidity</div></div>
+      <div class="w-card"><div class="w-icon">👁️</div><div class="w-val" id="w-vis">6 km</div><div class="w-lbl">Visibility</div></div>
+    </div>
+  </section>
+
+  <!-- ─── GEO MAP ─── -->
+  <section class="panel" id="panel-geo">
+    <div class="sec-title">🗺️ Geographic Hazard Map <span class="chip">LIVE</span></div>
+    <div class="geo-section">
+      <div id="geo-map"></div>
+      <div class="map-legend">
+        <div class="legend-item"><div class="legend-dot ld-crit"></div> Critical</div>
+        <div class="legend-item"><div class="legend-dot ld-warn"></div> Warning</div>
+        <div class="legend-item"><div class="legend-dot ld-mon"></div> Monitoring</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── REPORT ─── -->
+  <section class="panel" id="panel-report">
+    <div class="sec-title">⚠️ Report Ocean Hazard</div>
+    <div class="form-wrap">
+      <div class="f-card">
+        <h3>Submit a Hazard Report</h3>
+        <div class="f-row"><label>Hazard Type</label><select id="r-type"><option value="">Select type...</option><option>Cyclone / Storm</option><option>Oil Spill</option><option>Flooding</option><option>Tsunami Warning</option><option>Waterspout</option><option>Marine Pollution</option></select></div>
+        <div class="f-row"><label>Location</label><input type="text" id="r-loc" placeholder="e.g. Bay of Bengal, 12.3°N 80.1°E"></div>
+        <div class="f-row"><label>Severity</label><select id="r-sev"><option>Monitor</option><option>Warning</option><option>Critical</option></select></div>
+        <div class="f-row"><label>Description</label><textarea id="r-desc" placeholder="Describe what you observed..."></textarea></div>
+        <button class="btn-submit" onclick="submitReport()">Submit Report</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── WEATHER ─── -->
+  <section class="panel" id="panel-weather">
+    <div class="sec-title">🌦️ Weather Forecasting — Live</div>
+    <div id="weather-panel-live" class="weather-row" style="margin-bottom:24px;"></div>
+    <div class="hero-banner" style="height:200px;margin-bottom:24px;"><img src="../assets/images/storm-wave.jpg" alt="Storm"><div class="hero-overlay"><h2 style="font-size:22px;">3-Day Ocean Forecast</h2><p>Based on IMD &amp; OpenWeatherMap data</p></div></div>
+    <div class="hazard-grid">
+      <div class="haz-card"><div class="haz-head"><div style="font-size:28px">📅</div><div><div class="haz-title">Today</div><div class="haz-loc">Current conditions</div></div><div class="haz-status hs-warn">STORMY</div></div><div class="haz-body"><div class="haz-row"><span>Max Temp</span><span>32°C</span></div><div class="haz-row"><span>Rainfall</span><span>45 mm</span></div><div class="haz-row"><span>Wave Height</span><span>3.5 m</span></div></div></div>
+      <div class="haz-card"><div class="haz-head"><div style="font-size:28px">📅</div><div><div class="haz-title">Tomorrow</div><div class="haz-loc">24 hrs ahead</div></div><div class="haz-status hs-crit">CRITICAL</div></div><div class="haz-body"><div class="haz-row"><span>Landfall Risk</span><span>Very High</span></div><div class="haz-row"><span>Wind Speed</span><span>180–200 km/h</span></div><div class="haz-row"><span>Action</span><span>Evacuate</span></div></div></div>
+      <div class="haz-card"><div class="haz-head"><div style="font-size:28px">📅</div><div><div class="haz-title">Day 3</div><div class="haz-loc">48 hrs ahead</div></div><div class="haz-status hs-mon">CLEARING</div></div><div class="haz-body"><div class="haz-row"><span>Conditions</span><span>Improving</span></div><div class="haz-row"><span>Wave Height</span><span>2.0 m</span></div><div class="haz-row"><span>Wind Speed</span><span>35 km/h</span></div></div></div>
+    </div>
+  </section>
+
+  <!-- ─── DISASTER ─── -->
+  <section class="panel" id="panel-disaster">
+    <div class="sec-title">🆘 Disaster Recovery</div>
+    <div class="info-grid">
+      <div class="i-card"><h4>🏠 Lost Houseboat Aid</h4><p>Temporary shelter and financial replacement for people who lost their houseboat in ocean hazards.</p><div class="i-amount">₹50,000</div><button class="btn-action">Apply Now</button></div>
+      <div class="i-card"><h4>🐟 Fisher Aid Program</h4><p>Support for fishermen affected by cyclones and oil spills including equipment restoration.</p><div class="i-amount">₹25,000</div><button class="btn-action">Apply Now</button></div>
+      <div class="i-card"><h4>🏘️ Coastal Rebuild Fund</h4><p>Community fund for rebuilding coastal homes and infrastructure damaged by ocean hazards.</p><div class="i-amount">₹1.2L</div><button class="btn-action">Register</button></div>
+      <div class="i-card"><h4>📋 Recovery Plan</h4><p>Step-by-step plan covering legal support, housing, food and financial rebuilding.</p><button class="btn-action">View Plan</button></div>
+    </div>
+  </section>
+
+  <!-- ─── GOVT HELP ─── -->
+  <section class="panel" id="panel-govt">
+    <div class="sec-title">🏛️ Government Help</div>
+    <div class="info-grid">
+      <div class="i-card"><h4>🇮🇳 NDRF Deployment</h4><p>National Disaster Response Force deployed to 3 coastal districts. Teams on standby for rescue.</p><p style="margin-top:10px;color:var(--cyan);font-weight:600;font-size:15px;">Helpline: 1078</p></div>
+      <div class="i-card"><h4>💊 Medical Relief Camps</h4><p>Free medical assistance across 12 camps in affected coastal zones.</p><button class="btn-action">Find Nearest</button></div>
+      <div class="i-card"><h4>🏦 PM Relief Fund</h4><p>Apply for Prime Minister's National Relief Fund for disaster-affected families.</p><div class="i-amount">₹500/mo</div><button class="btn-action">Apply Online</button></div>
+      <div class="i-card"><h4>⚖️ Free Legal Aid</h4><p>Legal assistance for compensation disputes and property damage claims. Free of charge.</p><button class="btn-action">Request Aid</button></div>
+    </div>
+  </section>
+
+  <!-- ─── PUBLIC HELP ─── -->
+  <section class="panel" id="panel-public">
+    <div class="sec-title">👥 Public Help Forces</div>
+    <div class="info-grid">
+      <div class="i-card"><h4>🚁 Volunteer Rescue</h4><p>500+ trained volunteers for search and rescue in flooded coastal regions.</p><button class="btn-action">Join as Volunteer</button></div>
+      <div class="i-card"><h4>🍲 Community Kitchen</h4><p>8 community kitchens active. 3,000+ meals served daily to displaced families.</p><button class="btn-action">Volunteer Here</button></div>
+      <div class="i-card"><h4>📢 Awareness Drives</h4><p>Help spread ocean hazard awareness in your community. Training provided free.</p><button class="btn-action">Sign Up</button></div>
+    </div>
+  </section>
+
+  <!-- ─── DONATE ─── -->
+  <section class="panel" id="panel-donate">
+    <div class="sec-title">💛 Donate &amp; Aid</div>
+    <div class="form-wrap">
+      <div class="f-card">
+        <h3>Support Hazard Victims</h3>
+        <div class="f-row"><label>Your Name</label><input type="text" id="d-name" placeholder="Full Name"></div>
+        <div class="f-row"><label>Amount (₹)</label><input type="number" id="d-amount" placeholder="500" min="1"></div>
+        <div class="f-row"><label>Cause</label><select id="d-cause"><option>Cyclone Relief</option><option>Oil Spill Cleanup</option><option>Flood Recovery</option><option>Fisher Community Aid</option></select></div>
+        <button class="btn-submit" onclick="submitDonate()">Donate Now 💛</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SUBSIDIZE ─── -->
+  <section class="panel" id="panel-subsidize">
+    <div class="sec-title">💰 Subsidies</div>
+    <div class="info-grid">
+      <div class="i-card"><h4>🚤 Boat Replacement</h4><p>Government subsidy for replacing fishing boats damaged in ocean hazard events.</p><div class="i-amount">₹80,000</div><button class="btn-action">Check Eligibility</button></div>
+      <div class="i-card"><h4>⚡ Power Subsidy</h4><p>Free electricity for 6 months for coastal households affected by cyclone.</p><button class="btn-action">Apply</button></div>
+      <div class="i-card"><h4>🌾 Agriculture Aid</h4><p>Soil restoration and crop subsidies for coastal farmers affected by flood or storm surge.</p><div class="i-amount">₹30,000</div><button class="btn-action">Register</button></div>
+    </div>
+  </section>
+
+  <!-- ─── SETTINGS ─── -->
+  <section class="panel" id="panel-settings">
+    <div class="sec-title">⚙️ Settings</div>
+    <div class="form-wrap">
+      <div class="f-card">
+        <h3>Account &amp; Notifications</h3>
+        <div class="f-row"><label>Monitor Location</label><input type="text" id="s-location" placeholder="e.g. Chennai, Tamil Nadu"></div>
+        <div class="f-row"><label>Alert Type</label><select id="s-alert"><option value="all">All Hazards</option><option value="critical">Critical Only</option><option value="cyclone">Cyclone Only</option></select></div>
+        <div class="f-row"><label>Notification Method</label><select id="s-notify"><option value="email_sms">Email + SMS</option><option value="email">Email Only</option><option value="sms">SMS Only</option></select></div>
+        <button class="btn-submit" onclick="saveSettings()">Save Settings</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── HELP ─── -->
+  <section class="panel" id="panel-help">
+    <div class="sec-title">❓ Help &amp; Guide</div>
+    <div class="info-grid">
+      <div class="i-card"><h4>📖 How Wavy Works</h4><p>Wavy monitors ocean hazards using real-time data from weather stations, ISRO satellite imagery, social media analysis and IMD feeds — updated every 6 hours.</p></div>
+      <div class="i-card"><h4>🚨 Emergency Numbers</h4><p>Coast Guard: <strong>1554</strong><br>NDRF: <strong>1078</strong><br>Disaster: <strong>108</strong><br>Police: <strong>100</strong><br>Hospital: <strong>104</strong></p></div>
+      <div class="i-card"><h4>📡 Data Sources</h4><p>IMD weather data, ISRO satellite feeds, social media monitoring, government disaster databases and ocean buoy sensors.</p></div>
+      <div class="i-card"><h4>✉️ Contact Us</h4><p>Email: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="01727471716e737541766077782f6e6264606f">[email&#160;protected]</a><br>For technical issues or to report a false alert, reach our 24/7 support team.</p><button class="btn-action">Send Message</button></div>
+    </div>
+  </section>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="../js/app.js"></script>
+
+<script>
+  // ── Set user info from localStorage ──
+  const _user    = JSON.parse(localStorage.getItem('wavy_user') || '{}');
+  const _token   = localStorage.getItem('wavy_token') || '';
+  const _initial = (_user.name || 'U')[0].toUpperCase();
+  const _name    = _user.name || 'User';
+
+  // Update topbar avatar
+  const _av = document.getElementById('topbarAvatar');
+  if (_av) _av.textContent = _initial;
+
+  // Update sidebar avatar and name if they exist
+  const _sav  = document.getElementById('sidebarAvatar');
+  const _sname = document.getElementById('sidebarName');
+  const _semail = document.getElementById('sidebarEmail');
+  if (_sav)   _sav.textContent   = _initial;
+  if (_sname)  _sname.textContent  = _name;
+  if (_semail) _semail.textContent = _user.email || '';
+
+  // Show admin link if user is admin
+  if (_user.role === 'admin') {
+    const _adminLink = document.getElementById('adminLink');
+    if (_adminLink) _adminLink.classList.remove('hidden');
+  }
+
+  // Override logout to go back to login page
+  function logout() {
+    localStorage.removeItem('wavy_token');
+    localStorage.removeItem('wavy_user');
+    window.location.href = 'login.html';
+  }
+</script>
+</body>
+</html>

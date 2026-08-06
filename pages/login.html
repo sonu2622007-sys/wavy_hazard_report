@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login — Wavy</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'DM Sans',sans-serif;background:#020e1a;color:#e8f4f8;min-height:100vh;display:flex;align-items:center;justify-content:center}
+    .card{background:#042f4b;border:1px solid rgba(29,211,176,0.2);border-radius:20px;padding:40px;width:100%;max-width:420px;margin:20px}
+    .brand{display:flex;align-items:center;gap:10px;margin-bottom:28px}
+    .brand-icon{font-size:30px}
+    .brand-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#1dd3b0}
+    h1{font-family:'Syne',sans-serif;font-size:22px;margin-bottom:6px}
+    .sub{color:#7fafc4;font-size:14px;margin-bottom:24px}
+    .err{background:rgba(255,77,109,0.1);border:1px solid rgba(255,77,109,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#ff4d6d;margin-bottom:16px;display:none}
+    .field{margin-bottom:16px}
+    label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:0.6px;color:#7fafc4;margin-bottom:6px}
+    input{width:100%;padding:12px 14px;background:rgba(255,255,255,0.05);border:1px solid rgba(29,211,176,0.15);border-radius:10px;color:#e8f4f8;font-size:15px;outline:none;font-family:'DM Sans',sans-serif}
+    input:focus{border-color:#1dd3b0}
+    .hint{font-size:11px;color:#7fafc4;margin-top:5px}
+    .btn{width:100%;padding:14px;margin-top:8px;background:linear-gradient(135deg,#0a7e8c,#1dd3b0);border:none;border-radius:10px;color:#020e1a;font-family:'Syne',sans-serif;font-weight:700;font-size:15px;cursor:pointer}
+    .btn:hover{opacity:0.9}
+    .btn:disabled{opacity:0.6;cursor:not-allowed}
+    .links{display:flex;justify-content:space-between;margin-top:20px;font-size:13px}
+    .links a{color:#1dd3b0;text-decoration:none}
+    .back{display:block;text-align:center;margin-top:18px;font-size:13px;color:#7fafc4;text-decoration:none}
+    .back:hover{color:#1dd3b0}
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <div class="brand">
+    <span class="brand-icon">🌊</span>
+    <span class="brand-name">Wavy</span>
+  </div>
+
+  <h1>Welcome Back</h1>
+  <p class="sub">Sign in to monitor ocean hazards</p>
+
+  <div class="err" id="err"></div>
+
+  <div class="field">
+    <label>Email</label>
+    <input type="email" id="email" placeholder="you@example.com">
+  </div>
+
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Your password">
+    <div class="hint">Min 8 chars · 1 uppercase · 1 number · 1 special char (!@#$)</div>
+  </div>
+
+  <button class="btn" id="btn" onclick="login()">Sign In →</button>
+
+  <div class="links">
+    <a href="register.html">Create account →</a>
+    <a href="../index.html">← Home</a>
+  </div>
+</div>
+
+<script>
+function showErr(msg) {
+  var e = document.getElementById('err');
+  e.textContent = msg;
+  e.style.display = 'block';
+}
+
+function login() {
+  // Clear error
+  document.getElementById('err').style.display = 'none';
+
+  var email    = document.getElementById('email').value.trim();
+  var password = document.getElementById('password').value;
+  var btn      = document.getElementById('btn');
+
+  // Step 1: Check not empty
+  if (!email) { showErr('Please enter your email.'); return; }
+  if (!password) { showErr('Please enter your password.'); return; }
+
+  // Step 2: Check email format
+  if (email.indexOf('@') === -1) { showErr('Please enter a valid email.'); return; }
+
+  // Step 3: Check password rules one by one
+  if (password.length < 8) {
+    showErr('Password must be at least 8 characters long.'); return;
+  }
+  var hasUpper = false;
+  for (var i = 0; i < password.length; i++) {
+    if (password[i] >= 'A' && password[i] <= 'Z') { hasUpper = true; break; }
+  }
+  if (!hasUpper) { showErr('Password must contain at least 1 uppercase letter (A-Z).'); return; }
+
+  var hasNum = false;
+  for (var i = 0; i < password.length; i++) {
+    if (password[i] >= '0' && password[i] <= '9') { hasNum = true; break; }
+  }
+  if (!hasNum) { showErr('Password must contain at least 1 number (0-9).'); return; }
+
+  var specials = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  var hasSpec = false;
+  for (var i = 0; i < password.length; i++) {
+    if (specials.indexOf(password[i]) !== -1) { hasSpec = true; break; }
+  }
+  if (!hasSpec) { showErr('Password must contain at least 1 special character like ! @ # $'); return; }
+
+  // Step 4: All good — save and go to dashboard
+  btn.textContent = 'Signing in...';
+  btn.disabled = true;
+
+  var userName = email.split('@')[0];
+  localStorage.setItem('wavy_token', 'offline-mode');
+  localStorage.setItem('wavy_user', JSON.stringify({
+    id: 1,
+    name: userName,
+    email: email,
+    role: 'user'
+  }));
+
+  // Go to dashboard
+  window.location.href = 'dashboard.html';
+}
+
+// Enter key support
+document.getElementById('password').onkeydown = function(e) {
+  if (e.key === 'Enter') login();
+};
+document.getElementById('email').onkeydown = function(e) {
+  if (e.key === 'Enter') document.getElementById('password').focus();
+};
+</script>
+
+</body>
+</html>

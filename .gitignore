@@ -1,0 +1,17 @@
+# ── Node ─────────────────────────────────
+node_modules/
+npm-debug.log*
+
+# ── Environment (NEVER commit this!) ─────
+backend/.env
+
+# ── OS files ─────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── VS Code ───────────────────────────────
+.vscode/
+
+# ── Logs ─────────────────────────────────
+*.log
+logs/

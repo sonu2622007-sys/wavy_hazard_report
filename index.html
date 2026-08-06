@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wavy — Ocean Hazard Detector</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌊</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+<!-- ═══════════════ NAVBAR ═══════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <span class="brand-icon">🌊</span>
+      <span class="brand-name">Wavy</span>
+    </div>
+
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#features">Features</a></li>
+      <li><a href="#hazards">Hazard Types</a></li>
+      <li><a href="#stats">Impact</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="pages/login.html" class="btn-nav-login">Login</a>
+      <a href="pages/register.html" class="btn-nav-register">Sign Up Free</a>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button class="nav-burger" id="navBurger" onclick="toggleMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#about"    onclick="toggleMobileNav()">About</a>
+    <a href="#features" onclick="toggleMobileNav()">Features</a>
+    <a href="#hazards"  onclick="toggleMobileNav()">Hazard Types</a>
+    <a href="#stats"    onclick="toggleMobileNav()">Impact</a>
+    <a href="pages/login.html"    class="mob-login">Login</a>
+    <a href="pages/register.html" class="mob-register">Sign Up Free</a>
+  </div>
+</nav>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <img src="assets/images/wave.jpg" alt="Ocean" class="hero-img">
+    <div class="hero-overlay"></div>
+  </div>
+
+  <!-- Animated waves at bottom -->
+  <div class="hero-waves">
+    <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+      <path d="M0,60 C360,120 1080,0 1440,60 L1440,120 L0,120 Z" fill="rgba(10,126,140,0.3)" class="wave-path w1"/>
+      <path d="M0,80 C480,20 960,100 1440,40 L1440,120 L0,120 Z" fill="rgba(29,211,176,0.15)" class="wave-path w2"/>
+      <path d="M0,100 C240,60 720,110 1440,70 L1440,120 L0,120 Z" fill="#020e1a" class="wave-path w3"/>
+    </svg>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="live-dot"></span> Live Ocean Monitoring
+    </div>
+    <h1 class="hero-title">
+      Detect Ocean Hazards<br>
+      <span class="gradient-text">Before They Strike</span>
+    </h1>
+    <p class="hero-sub">
+      Real-time tracking of cyclones, oil spills, floods and storms
+      across Indian coastal waters — powered by live weather data,
+      satellite feeds and community reports.
+    </p>
+    <div class="hero-btns">
+      <a href="pages/register.html" class="btn-hero-primary">Get Started Free →</a>
+      <a href="#features" class="btn-hero-secondary">See How It Works</a>
+    </div>
+
+    <!-- Mini stats bar -->
+    <div class="hero-stats">
+      <div class="hstat"><span class="hstat-num">3</span><span class="hstat-lbl">Active Cyclones</span></div>
+      <div class="hstat-div"></div>
+      <div class="hstat"><span class="hstat-num">5</span><span class="hstat-lbl">Flood Warnings</span></div>
+      <div class="hstat-div"></div>
+      <div class="hstat"><span class="hstat-num">50K+</span><span class="hstat-lbl">People Protected</span></div>
+      <div class="hstat-div"></div>
+      <div class="hstat"><span class="hstat-num">24/7</span><span class="hstat-lbl">Live Monitoring</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ ABOUT ═══════════════ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div class="about-img-wrap">
+        <img src="assets/images/beach.jpg" alt="Safe Beach" class="about-img">
+        <div class="about-img-badge">
+          <span>🛡️</span>
+          <div>
+            <strong>Protecting Coasts</strong>
+            <small>Since 2024</small>
+          </div>
+        </div>
+      </div>
+      <div class="about-text">
+        <div class="section-tag">About Wavy</div>
+        <h2 class="section-title">What is <span class="gradient-text">Wavy?</span></h2>
+        <p>Wavy is an ocean hazard detection and alert platform built to protect coastal communities across India. We combine real-time weather data, satellite imagery from ISRO, IMD forecasts and community reports to give the earliest possible warnings of ocean-related disasters.</p>
+        <p style="margin-top:16px;">Whether you're a fisherman, a coastal resident, a disaster relief authority or a government body — Wavy gives you the information you need to act fast and stay safe.</p>
+        <div class="about-points">
+          <div class="apoint">✅ Real-time hazard tracking on interactive maps</div>
+          <div class="apoint">✅ Community-powered hazard reporting</div>
+          <div class="apoint">✅ Direct links to govt aid, donations &amp; recovery</div>
+          <div class="apoint">✅ Weather forecasting for 5 major coastal cities</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FEATURES ═══════════════ -->
+<section class="section section-dark" id="features">
+  <div class="container">
+    <div class="section-tag center">Features</div>
+    <h2 class="section-title center">Everything You Need to<br><span class="gradient-text">Stay Safe at Sea</span></h2>
+    <p class="section-sub center">From live alerts to disaster recovery — Wavy covers the full lifecycle of ocean hazard response.</p>
+
+    <div class="features-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🗺️</div>
+        <h3>Geographic Hazard Map</h3>
+        <p>Interactive real-time map showing all active hazards with severity levels, spread radius and live updates.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌀</div>
+        <h3>Cyclone Tracking</h3>
+        <p>Track cyclone path, wind speed, landfall ETA and affected zones — updated every 6 hours from IMD data.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">⚠️</div>
+        <h3>Community Reporting</h3>
+        <p>Anyone can report a hazard — oil spill, flooding, waterspout — and alert authorities instantly.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌦️</div>
+        <h3>Weather Forecasting</h3>
+        <p>5-day ocean weather forecast for all major coastal cities including wave height, wind and storm risk.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🆘</div>
+        <h3>Disaster Recovery</h3>
+        <p>Find relief camps, apply for govt aid, connect with volunteers and access recovery plans in one place.</p>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🔔</div>
+        <h3>Real-time Alerts</h3>
+        <p>Get instant alerts via SMS and email when a hazard enters your monitored location — powered by Socket.io.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ HAZARD TYPES ═══════════════ -->
+<section class="section" id="hazards">
+  <div class="container">
+    <div class="section-tag center">Ocean Hazards</div>
+    <h2 class="section-title center">What We <span class="gradient-text">Monitor</span></h2>
+
+    <div class="hazard-img-grid">
+      <div class="himg-card">
+        <img src="assets/images/wave.jpg" alt="Cyclone">
+        <div class="himg-overlay">
+          <div class="himg-badge danger">CRITICAL</div>
+          <h3>🌀 Cyclone</h3>
+          <p>Severe cyclonic storms tracked from formation to landfall with hour-by-hour updates.</p>
+        </div>
+      </div>
+      <div class="himg-card">
+        <img src="assets/images/storm-wave.jpg" alt="Storm Wave">
+        <div class="himg-overlay">
+          <div class="himg-badge warning">WARNING</div>
+          <h3>⛈️ Storm Surge</h3>
+          <p>Dangerous wave surges and storm systems threatening coastal infrastructure and lives.</p>
+        </div>
+      </div>
+      <div class="himg-card">
+        <img src="assets/images/tornado.jpg" alt="Waterspout">
+        <div class="himg-overlay">
+          <div class="himg-badge danger">ALERT</div>
+          <h3>🌪️ Waterspout</h3>
+          <p>Marine tornadoes detected via satellite and community reports near fishing zones.</p>
+        </div>
+      </div>
+      <div class="himg-card">
+        <img src="assets/images/beach.jpg" alt="Safe Zone">
+        <div class="himg-overlay">
+          <div class="himg-badge safe">SAFE ZONES</div>
+          <h3>🏖️ Clear Beaches</h3>
+          <p>Verified safe coastal zones with real-time condition updates for fishermen and tourists.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ IMPACT STATS ═══════════════ -->
+<section class="section section-dark" id="stats">
+  <div class="container">
+    <div class="section-tag center">Our Impact</div>
+    <h2 class="section-title center">Numbers That <span class="gradient-text">Matter</span></h2>
+
+    <div class="impact-grid">
+      <div class="impact-card">
+        <div class="impact-num">50,000+</div>
+        <div class="impact-lbl">People Protected</div>
+        <div class="impact-sub">Across 5 coastal states</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">127</div>
+        <div class="impact-lbl">Hazards Tracked</div>
+        <div class="impact-sub">In the last 30 days</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">48 hrs</div>
+        <div class="impact-lbl">Early Warning</div>
+        <div class="impact-sub">Average lead time</div>
+      </div>
+      <div class="impact-card">
+        <div class="impact-num">₹12L+</div>
+        <div class="impact-lbl">Aid Facilitated</div>
+        <div class="impact-sub">Through our platform</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ CTA ═══════════════ -->
+<section class="section cta-section">
+  <div class="container">
+    <div class="cta-box">
+      <div class="cta-waves">
+        <div class="cw"></div><div class="cw"></div><div class="cw"></div>
+      </div>
+      <div class="cta-content">
+        <h2>Ready to Protect Your Coast?</h2>
+        <p>Join thousands of coastal residents, fishermen and authorities using Wavy to stay ahead of ocean hazards.</p>
+        <div class="cta-btns">
+          <a href="pages/register.html" class="btn-hero-primary">Create Free Account →</a>
+          <a href="pages/login.html"    class="btn-hero-secondary">Already have account? Login</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="footer" id="contact">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="nav-brand" style="margin-bottom:12px;">
+          <span class="brand-icon">🌊</span>
+          <span class="brand-name">Wavy</span>
+        </div>
+        <p>Real-time ocean hazard detection protecting coastal communities across India.</p>
+        <div class="footer-emergency">
+          <strong>🚨 Emergency:</strong> Coast Guard 1554 &nbsp;|&nbsp; NDRF 1078
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <a href="pages/register.html">Sign Up</a>
+        <a href="pages/login.html">Login</a>
+        <a href="#features">Features</a>
+        <a href="#hazards">Hazard Types</a>
+      </div>
+      <div class="footer-links">
+        <h4>Help</h4>
+        <a href="#">Disaster Recovery</a>
+        <a href="#">Govt Aid</a>
+        <a href="#">Donate</a>
+        <a href="#">Report Hazard</a>
+      </div>
+      <div class="footer-links">
+        <h4>Contact</h4>
+        <a href="/cdn-cgi/l/email-protection#10636560607f626450677166693e7f7375717e"><span class="__cf_email__" data-cfemail="691a1c1919061b1d291e081f1047060a0c0807">[email&#160;protected]</span></a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Wavy — Ocean Hazard Detector. All rights reserved.</span>
+      <span>Made with 🌊 for coastal India</span>
+    </div>
+  </div>
+</footer>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+<script>
+  // Navbar scroll effect
+  window.addEventListener('scroll', () => {
+    document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  // Mobile nav toggle
+  function toggleMobileNav() {
+    document.getElementById('mobileMenu').classList.toggle('open');
+    document.getElementById('navBurger').classList.toggle('active');
+  }
+
+  // Smooth scroll for anchor links
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
+  });
+
+  // Animate numbers on scroll
+ </script>
+  </body>
+</html>   

@@ -1,0 +1,33 @@
+# render.yaml — Deploy Wavy backend FREE on Render.com
+# Instructions: https://render.com/docs/infrastructure-as-code
+
+services:
+  - type: web
+    name: wavy-backend
+    env: node
+    region: singapore          # closest to India
+    plan: free                 # FREE tier
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+      - key: DB_HOST
+        sync: false            # you will fill in Render dashboard
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: wavy_db
+      - key: JWT_SECRET
+        sync: false
+      - key: EMAIL_USER
+        sync: false
+      - key: EMAIL_PASS
+        sync: false
+      - key: WEATHER_API_KEY
+        sync: false
+      - key: CLIENT_URL
+        sync: false            # your frontend URL after deploy
